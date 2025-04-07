@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Курс MySQL | MySQLCourse</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .module-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .module-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .hidden-module {
+            opacity: 0.6;
+            background-color: #f8f9fa;
+        }
+        .theory-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            margin: 1rem 0;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+        }
+        .animation-container {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .question-card {
+            margin-bottom: 2rem;
+            border-left: 4px solid #0d6efd;
+        }
+        .match-question {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 1rem 0;
+        }
+        .match-item {
+            background: #f8f9fa;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: grab;
+        }
+        .correct-answer {
+            background-color: #d1e7dd;
+            border-color: #badbcc;
+        }
+        .incorrect-answer {
+            background-color: #f8d7da;
+            border-color: #f5c2c7;
+        }
+        .edit-mode .editable {
+            border: 1px dashed #ccc;
+            padding: 5px;
+            margin: 2px 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Шапка -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-database me-2"></i>MySQLCourse
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="text-white me-3">Иван Петров</span>
+                <button class="btn btn-outline-light">Выйти</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <!-- Боковое меню -->
+            <div class="col-lg-3">
+                <div class="card mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Мои курсы</h5>
+                    </div>
+                    <div class="list-group list-group-flush">
+                        <a href="#" class="list-group-item list-group-item-action active">MySQL для начинающих</a>
+                        <a href="#" class="list-group-item list-group-item-action">Продвинутый MySQL</a>
+                        <a href="#" class="list-group-item list-group-item-action">Оптимизация запросов</a>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Прогресс</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Основы SQL</span>
+                                <span>75%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 75%"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Работа с таблицами</span>
+                                <span>30%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 30%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Основное содержимое -->
+            <div class="col-lg-9">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h2 class="card-title">MySQL для начинающих</h2>
+                        <p class="card-text">Освойте основы работы с одной из самых популярных СУБД</p>
+                    </div>
+                </div>
+
+                <!-- Переключатель режима преподавателя -->
+                <div class="d-flex justify-content-end mb-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="teacherMode">
+                        <label class="form-check-label" for="teacherMode">Режим преподавателя</label>
+                    </div>
+                </div>
+
+                <!-- Модули курса -->
+                <div class="row mb-4" id="courseModules">
+                    <!-- Модуль 1 -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card module-card h-100" data-module="theory">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h5 class="card-title">Изучение теории</h5>
+                                        <h6 class="card-subtitle mb-2 text-muted">Основы SQL</h6>
+                                    </div>
+                                    <span class="badge bg-success">Доступно</span>
+                                </div>
+                                <p class="card-text mt-3">Изучите базовые команды SQL для работы с данными</p>
+                                <div class="module-actions mt-3 d-none">
+                                    <button class="btn btn-sm btn-outline-secondary me-2 edit-module-btn">
+                                        <i class="fas fa-edit"></i> Редактировать
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger toggle-module-btn">
+                                        <i class="fas fa-eye-slash"></i> Скрыть
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Модуль 2 -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card module-card h-100" data-module="test">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h5 class="card-title">Проверь себя</h5>
+                                        <h6 class="card-subtitle mb-2 text-muted">Тест по основам SQL</h6>
+                                    </div>
+                                    <span class="badge bg-success">Доступно</span>
+                                </div>
+                                <p class="card-text mt-3">Проверьте свои знания по пройденному материалу</p>
+                                <div class="module-actions mt-3 d-none">
+                                    <button class="btn btn-sm btn-outline-secondary me-2 edit-questions-btn">
+                                        <i class="fas fa-edit"></i> Редактировать
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger toggle-module-btn">
+                                        <i class="fas fa-eye-slash"></i> Скрыть
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Контент модуля (динамически загружается) -->
+                <div class="card mb-4 d-none" id="moduleContent">
+                    <div class="card-header">
+                        <h4 class="mb-0" id="moduleTitle">Название модуля</h4>
+                    </div>
+                    <div class="card-body" id="moduleContentBody">
+                        <!-- Контент будет загружен через JS -->
+                    </div>
+                </div>
+
+                <!-- Модальное окно редактирования теории -->
+                <div class="modal fade" id="editTheoryModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Редактирование теории</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="theoryForm">
+                                    <div class="mb-3">
+                                        <label class="form-label">Название модуля</label>
+                                        <input type="text" class="form-control" value="Основы SQL">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Теоретический материал</label>
+                                        <textarea class="form-control" rows="10" id="theoryText">
+&lt;h4&gt;Что такое SQL?&lt;/h4&gt;
+&lt;p&gt;SQL (Structured Query Language) — это язык структурированных запросов, используемый для работы с реляционными базами данных.&lt;/p&gt;
+
+&lt;h4&gt;Основные команды&lt;/h4&gt;
+&lt;img src="images/sql-commands.png" alt="Основные SQL команды" class="img-fluid"&gt;
+
+&lt;div class="video-container"&gt;
+    &lt;iframe src="https://www.youtube.com/embed/пример" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+&lt;div class="animation-container"&gt;
+    &lt;!-- Анимация работы SELECT --&gt;
+    &lt;img src="animations/select-animation.gif" alt="Анимация SELECT"&gt;
+&lt;/div&gt;
+
+&lt;audio controls&gt;
+    &lt;source src="audio/sql-intro.mp3" type="audio/mpeg"&gt;
+    Ваш браузер не поддерживает аудио элемент.
+&lt;/audio&gt;
+                                        </textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Дополнительные материалы</label>
+                                        <input type="file" class="form-control" multiple>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                <button type="button" class="btn btn-primary">Сохранить</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Модальное окно редактирования вопросов -->
+                <div class="modal fade" id="editQuestionsModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Редактирование вопросов</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <button class="btn btn-sm btn-primary add-question-btn">Добавить вопрос</button>
+                                </div>
+                                
+                                <div class="questions-list">
+                                    <!-- Вопрос 1 -->
+                                    <div class="card mb-3 question-item">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <h6>Вопрос #1</h6>
+                                                <div>
+                                                    <button class="btn btn-sm btn-outline-secondary me-1 edit-question-btn">Изменить</button>
+                                                    <button class="btn btn-sm btn-outline-danger delete-question-btn">Удалить</button>
+                                                </div>
+                                            </div>
+                                            <p class="mb-2"><strong>Текст вопроса:</strong> Что означает аббревиатура SQL?</p>
+                                            <p class="mb-2"><strong>Тип вопроса:</strong> Текстовый ответ</p>
+                                            <p class="mb-0"><strong>Правильный ответ:</strong> Structured Query Language</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Вопрос 2 -->
+                                    <div class="card mb-3 question-item">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <h6>Вопрос #2</h6>
+                                                <div>
+                                                    <button class="btn btn-sm btn-outline-secondary me-1 edit-question-btn">Изменить</button>
+                                                    <button class="btn btn-sm btn-outline-danger delete-question-btn">Удалить</button>
+                                                </div>
+                                            </div>
+                                            <p class="mb-2"><strong>Текст вопроса:</strong> Какая команда используется для извлечения данных из таблицы?</p>
+                                            <p class="mb-2"><strong>Тип вопроса:</strong> Выбор одного варианта</p>
+                                            <p class="mb-0"><strong>Варианты ответов:</strong> INSERT, SELECT, UPDATE, DELETE (правильный: SELECT)</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Вопрос 3 -->
+                                    <div class="card mb-3 question-item">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <h6>Вопрос #3</h6>
+                                                <div>
+                                                    <button class="btn btn-sm btn-outline-secondary me-1 edit-question-btn">Изменить</button>
+                                                    <button class="btn btn-sm btn-outline-danger delete-question-btn">Удалить</button>
+                                                </div>
+                                            </div>
+                                            <p class="mb-2"><strong>Текст вопроса:</strong> Соотнесите команды SQL с их назначением</p>
+                                            <p class="mb-2"><strong>Тип вопроса:</strong> Соответствие</p>
+                                            <p class="mb-0"><strong>Пары:</strong> SELECT - извлечение данных, INSERT - добавление данных, UPDATE - обновление данных</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                <button type="button" class="btn btn-primary">Сохранить тест</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Модальное окно добавления/редактирования вопроса -->
+                <div class="modal fade" id="questionEditorModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Редактирование вопроса</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="questionForm">
+                                    <div class="mb-3">
+                                        <label class="form-label">Текст вопроса</label>
+                                        <textarea class="form-control" rows="3"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Тип вопроса</label>
+                                        <select class="form-select question-type-select">
+                                            <option value="text">Текстовый ответ</option>
+                                            <option value="single">Выбор одного варианта</option>
+                                            <option value="multiple">Выбор нескольких вариантов</option>
+                                            <option value="match">Соответствие</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- Для текстового ответа -->
+                                    <div class="mb-3 answer-field text-answer">
+                                        <label class="form-label">Правильный ответ</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                    
+                                    <!-- Для выбора одного/нескольких вариантов -->
+                                    <div class="mb-3 answer-field single-answer d-none">
+                                        <label class="form-label">Варианты ответов</label>
+                                        <div class="options-container mb-2">
+                                            <div class="input-group mb-2">
+                                                <input type="text" class="form-control" placeholder="Вариант ответа">
+                                                <div class="input-group-text">
+                                                    <input class="form-check-input mt-0" type="radio" name="correctOption">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary add-option-btn">Добавить вариант</button>
+                                    </div>
+                                    
+                                    <!-- Для соответствия -->
+                                    <div class="mb-3 answer-field match-answer d-none">
+                                        <label class="form-label">Пары соответствия</label>
+                                        <div class="match-pairs-container mb-2">
+                                            <div class="row g-2 mb-2">
+                                                <div class="col">
+                                                    <input type="text" class="form-control" placeholder="Элемент 1">
+                                                </div>
+                                                <div class="col">
+                                                    <input type="text" class="form-control" placeholder="Элемент 2">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary add-pair-btn">Добавить пару</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                <button type="button" class="btn btn-primary">Сохранить вопрос</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Режим преподавателя
+        document.getElementById('teacherMode').addEventListener('change', function() {
+            const isTeacherMode = this.checked;
+            document.querySelectorAll('.module-actions').forEach(el => {
+                el.classList.toggle('d-none', !isTeacherMode);
+            });
+            
+            if (isTeacherMode) {
+                document.getElementById('moduleContent').classList.add('edit-mode');
+            } else {
+                document.getElementById('moduleContent').classList.remove('edit-mode');
+            }
+        });
+
+        // Загрузка контента модуля
+        document.querySelectorAll('.module-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const moduleType = this.getAttribute('data-module');
+                const moduleTitle = this.querySelector('.card-title').textContent;
+                const moduleSubtitle = this.querySelector('.card-subtitle').textContent;
+                
+                document.getElementById('moduleTitle').textContent = `${moduleTitle}: ${moduleSubtitle}`;
+                
+                let content = '';
+                if (moduleType === 'theory') {
+                    content = `
+                        <div class="theory-content">
+                            <h4>Что такое SQL?</h4>
+                            <p>SQL (Structured Query Language) — это язык структурированных запросов, используемый для работы с реляционными базами данных.</p>
+                            
+                            <h4>Основные команды</h4>
+                            <img src="images/sql-commands.png" alt="Основные SQL команды" class="img-fluid">
+                            
+                            <div class="video-container">
+                                <iframe src="https://www.youtube.com/embed/пример" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            
+                            <div class="animation-container">
+                                <img src="animations/select-animation.gif" alt="Анимация SELECT">
+                                <p class="mt-2">Анимация выполнения SELECT запроса</p>
+                            </div>
+                            
+                            <audio controls class="mt-3">
+                                <source src="audio/sql-intro.mp3" type="audio/mpeg">
+                                Ваш браузер не поддерживает аудио элемент.
+                            </audio>
+                        </div>
+                    `;
+                } else if (moduleType === 'test') {
+                    content = `
+                        <div class="test-content">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>Тест содержит 3 вопроса разных типов.
+                            </div>
+                            
+                            <!-- Вопрос 1: Текстовый ответ -->
+                            <div class="card question-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Вопрос 1</h5>
+                                    <p class="card-text">Что означает аббревиатура SQL?</p>
+                                    <div class="mb-3">
+                                        <input type="text" class="form-control answer-input" data-correct="Structured Query Language">
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-primary check-answer-btn">Проверить</button>
+                                    <div class="answer-feedback mt-2 d-none"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Вопрос 2: Выбор одного варианта -->
+                            <div class="card question-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Вопрос 2</h5>
+                                    <p class="card-text">Какая команда используется для извлечения данных из таблицы?</p>
+                                    <div class="mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="question2" id="q2opt1">
+                                            <label class="form-check-label" for="q2opt1">INSERT</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="question2" id="q2opt2" data-correct>
+                                            <label class="form-check-label" for="q2opt2">SELECT</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="question2" id="q2opt3">
+                                            <label class="form-check-label" for="q2opt3">UPDATE</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="question2" id="q2opt4">
+                                            <label class="form-check-label" for="q2opt4">DELETE</label>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-primary check-answer-btn">Проверить</button>
+                                    <div class="answer-feedback mt-2 d-none"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Вопрос 3: Соответствие -->
+                            <div class="card question-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Вопрос 3</h5>
+                                    <p class="card-text">Соотнесите команды SQL с их назначением:</p>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <ul class="list-group mb-3 match-column" data-column="1">
+                                                <li class="list-group-item match-item" data-id="1">SELECT</li>
+                                                <li class="list-group-item match-item" data-id="2">INSERT</li>
+                                                <li class="list-group-item match-item" data-id="3">UPDATE</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-2 text-center align-self-center">
+                                            <i class="fas fa-arrows-alt-h fa-2x text-muted"></i>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <ul class="list-group mb-3 match-column" data-column="2">
+                                                <li class="list-group-item match-item" data-id="a">Добавление данных</li>
+                                                <li class="list-group-item match-item" data-id="b">Извлечение данных</li>
+                                                <li class="list-group-item match-item" data-id="c">Обновление данных</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="correct-pairs d-none">
+                                        <!-- Правильные пары для проверки -->
+                                        <span data-pair="1-b"></span>
+                                        <span data-pair="2-a"></span>
+                                        <span data-pair="3-c"></span>
+                                    </div>
+                                    
+                                    <button class="btn btn-sm btn-outline-primary check-answer-btn">Проверить</button>
+                                    <div class="answer-feedback mt-2 d-none"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid gap-2 mt-4">
+                                <button class="btn btn-primary finish-test-btn">Завершить тест</button>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                document.getElementById('moduleContentBody').innerHTML = content;
+                document.getElementById('moduleContent').classList.remove('d-none');
+                
+                // Инициализация функционала теста
+                if (moduleType === 'test') {
+                    initTestFunctionality();
+                }
+            });
+        });
+
+        // Инициализация функционала теста
+        function initTestFunctionality() {
+            // Проверка текстового ответа
+            document.querySelectorAll('.check-answer-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const card = this.closest('.question-card');
+                    const feedback = card.querySelector('.answer-feedback');
+                    
+                    if (card.querySelector('.answer-input')) {
+                        // Текстовый ответ
+                        const input = card.querySelector('.answer-input');
+                        const userAnswer = input.value.trim();
+                        const correctAnswer = input.getAttribute('data-correct');
+                        
+                        if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
+                            feedback.innerHTML = '<i class="fas fa-check-circle text-success me-2"></i>Верно!';
+                            card.classList.add('correct-answer');
+                            card.classList.remove('incorrect-answer');
+                        } else {
+                            feedback.innerHTML = `<i class="fas fa-times-circle text-danger me-2"></i>Неверно. Правильный ответ: ${correctAnswer}`;
+                            card.classList.add('incorrect-answer');
+                            card.classList.remove('correct-answer');
+                        }
+                    } 
+                    else if (card.querySelector('input[type="radio"]')) {
+                        // Выбор одного варианта
+                        const selectedOption = card.querySelector('input[type="radio"]:checked');
+                        
+                        if (!selectedOption) {
+                            feedback.innerHTML = '<i class="fas fa-exclamation-circle text-warning me-2"></i>Выберите вариант ответа';
+                            return;
+                        }
+                        
+                        if (selectedOption.hasAttribute('data-correct')) {
+                            feedback.innerHTML = '<i class="fas fa-check-circle text-success me-2"></i>Верно!';
+                            card.classList.add('correct-answer');
+                            card.classList.remove('incorrect-answer');
+                        } else {
+                            feedback.innerHTML = '<i class="fas fa-times-circle text-danger me-2"></i>Неверно. Попробуйте еще раз.';
+                            card.classList.add('incorrect-answer');
+                            card.classList.remove('correct-answer');
+                        }
+                    }
+                    else if (card.querySelector('.match-column')) {
+                        // Соответствие (упрощенная проверка)
+                        feedback.innerHTML = '<i class="fas fa-info-circle text-primary me-2"></i>Перетащите элементы для сопоставления';
+                        card.classList.remove('correct-answer', 'incorrect-answer');
+                    }
+                    
+                    feedback.classList.remove('d-none');
+                });
+            });
+            
+            // Завершение теста
+            document.querySelector('.finish-test-btn')?.addEventListener('click', function() {
+                const correctAnswers = document.querySelectorAll('.correct-answer').length;
+                const totalQuestions = document.querySelectorAll('.question-card').length;
+                const score = Math.round((correctAnswers / totalQuestions) * 100);
+                
+                alert(`Тест завершен! Ваш результат: ${score}% (${correctAnswers} из ${totalQuestions} правильных ответов)`);
+            });
+            
+            // Drag and drop для соответствия (упрощенная реализация)
+            let draggedItem = null;
+            
+            document.querySelectorAll('.match-item').forEach(item => {
+                item.setAttribute('draggable', 'true');
+                
+                item.addEventListener('dragstart', function() {
+                    draggedItem = this;
+                    setTimeout(() => this.style.opacity = '0.4', 0);
+                });
+                
+                item.addEventListener('dragend', function() {
+                    this.style.opacity = '1';
+                });
+                
+                item.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                });
+                
+                item.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    if (draggedItem !== this) {
+                        const parent1 = draggedItem.parentNode;
+                        const parent2 = this.parentNode;
+                        
+                        // Проверяем, что перетаскивание между колонками
+                        if (parent1 !== parent2) {
+                            const clone1 = draggedItem.cloneNode(true);
+                            const clone2 = this.cloneNode(true);
+                            
+                            parent1.replaceChild(clone2, draggedItem);
+                            parent2.replaceChild(clone1, this);
+                            
+                            // Обновляем обработчики для новых элементов
+                            initTestFunctionality();
+                        }
+                    }
+                });
+            });
+        }
+
+        // Управление модулями (преподаватель)
+        document.querySelectorAll('.toggle-module-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const card = this.closest('.module-card');
+                const isHidden = card.classList.contains('hidden-module');
+                
+                if (isHidden) {
+                    card.classList.remove('hidden-module');
+                    card.querySelector('.badge').textContent = 'Доступно';
+                    card.querySelector('.badge').className = 'badge bg-success';
+                    this.innerHTML = '<i class="fas fa-eye-slash"></i> Скрыть';
+                } else {
+                    card.classList.add('hidden-module');
+                    card.querySelector('.badge').textContent = 'Скрыто';
+                    card.querySelector('.badge').className = 'badge bg-secondary';
+                    this.innerHTML = '<i class="fas fa-eye"></i> Показать';
+                }
+            });
+        });
+
+        // Редактирование теории
+        document.querySelectorAll('.edit-module-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const modal = new bootstrap.Modal(document.getElementById('editTheoryModal'));
+                modal.show();
+            });
+        });
+
+        // Редактирование вопросов теста
+        document.querySelectorAll('.edit-questions-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const modal = new bootstrap.Modal(document.getElementById('editQuestionsModal'));
+                modal.show();
+            });
+        });
+
+        // Добавление нового вопроса
+        document.querySelector('.add-question-btn')?.addEventListener('click', function() {
+            const modal = new bootstrap.Modal(document.getElementById('questionEditorModal'));
+            modal.show();
+        });
+
+        // Изменение типа вопроса
+        document.querySelector('.question-type-select')?.addEventListener('change', function() {
+            const type = this.value;
+            
+            // Скрываем все поля ответов
+            document.querySelectorAll('.answer-field').forEach(field => {
+                field.classList.add('d-none');
+            });
+            
+            // Показываем нужное поле
+            document.querySelector(`.${type}-answer`).classList.remove('d-none');
+        });
+
+        // Добавление варианта ответа
+        document.querySelector('.add-option-btn')?.addEventListener('click', function() {
+            const container = this.previousElementSibling;
+            const newOption = document.createElement('div');
+            newOption.className = 'input-group mb-2';
+            newOption.innerHTML = `
+                <input type="text" class="form-control" placeholder="Вариант ответа">
+                <div class="input-group-text">
+                    <input class="form-check-input mt-0" type="radio" name="correctOption">
+                </div>
+            `;
+            container.appendChild(newOption);
+        });
+
+        // Добавление пары соответствия
+        document.querySelector('.add-pair-btn')?.addEventListener('click', function() {
+            const container = this.previousElementSibling;
+            const newPair = document.createElement('div');
+            newPair.className = 'row g-2 mb-2';
+            newPair.innerHTML = `
+                <div class="col">
+                    <input type="text" class="form-control" placeholder="Элемент 1">
+                </div>
+                <div class="col">
+                    <input type="text" class="form-control" placeholder="Элемент 2">
+                </div>
+            `;
+            container.appendChild(newPair);
+        });
+    </script>
+</body>
+</html>
