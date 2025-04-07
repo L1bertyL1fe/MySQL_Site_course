@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Профессиональный курс по MySQL для разработчиков">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Профессиональный курс по MySQL | MySQLCourse</title>
+</head>
+
+<body>
+    <header class="main-header">
+        <div class="header-container">
+            <a href="#" class="logo" aria-label="На главную">
+                <span class="logo-icon"><i class="fas fa-database"></i></span>
+                <span class="logo-text">MySQL<span>Course</span></span>
+            </a>
+
+            <nav class="main-nav" aria-label="Основная навигация">
+                <button class="mobile-menu-toggle" aria-expanded="false" aria-label="Меню">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-list">
+                    <li><a href="#" class="nav-link active">Главная</a></li>
+                    <li><a href="#" class="nav-link">Курсы</a></li>
+                    <li><a href="#" class="nav-link">Теория</a></li>
+                    <li><a href="#" class="nav-link">Практика</a></li>
+                    <li><a href="#" class="nav-link">О проекте</a></li>
+                </ul>
+            </nav>
+
+            <div class="auth-buttons">
+                <a href="#" class="btn login-btn">Вход</a>
+                <a href="#" class="btn register-btn">Регистрация</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">Профессиональный курс по MySQL</h1>
+                <p class="hero-subtitle">Освойте одну из самых популярных СУБД с нуля до уровня эксперта</p>
+                <div class="hero-actions">
+                    <button class="btn cta-btn">Начать обучение</button>
+                    <a href="#features" class="btn outline-btn">Узнать больше</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="images/mysql-hero.svg" alt="MySQL визуализация" loading="lazy">
+            </div>
+        </section>
+
+        <section id="features" class="features-section">
+            <div class="section-header">
+                <h2 class="section-title">Что вы освоите</h2>
+                <p class="section-subtitle">Полный спектр навыков работы с базами данных</p>
+            </div>
+            
+            <div class="features-grid">
+                <article class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h3 class="feature-title">Основы SQL</h3>
+                    <p class="feature-description">Полное понимание основных операций: SELECT, INSERT, UPDATE, DELETE и других</p>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-table"></i>
+                    </div>
+                    <h3 class="feature-title">Работа с таблицами</h3>
+                    <p class="feature-description">Создание, изменение и оптимизация структуры данных</p>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="feature-title">Производительность</h3>
+                    <p class="feature-description">Индексы, транзакции и методы оптимизации запросов</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="curriculum-section">
+            <div class="section-header">
+                <h2 class="section-title">Программа обучения</h2>
+                <p class="section-subtitle">Систематизированный подход к освоению MySQL</p>
+            </div>
+
+            <div class="curriculum-tabs">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" data-tab="module1">Основы MySQL</button>
+                    <button class="tab-btn" data-tab="module2">Продвинутый уровень</button>
+                </div>
+
+                <div class="tab-content active" id="module1">
+                    <ul class="module-list">
+                        <li class="module-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Введение в реляционные базы данных</span>
+                        </li>
+                        <li class="module-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Установка и настройка MySQL</span>
+                        </li>
+                        <li class="module-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Базовые SQL-запросы</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="tab-content" id="module2">
+                    <ul class="module-list">
+                        <li class="module-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Сложные JOIN-запросы</span>
+                        </li>
+                        <li class="module-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Хранимые процедуры и функции</span>
+                        </li>
+                        <li class="module-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Триггеры и события</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="cta-container">
+                <div class="cta-content">
+                    <h2 class="cta-title">Готовы стать экспертом MySQL?</h2>
+                    <p class="cta-text">Присоединяйтесь к сообществу профессионалов</p>
+                </div>
+                <button class="btn cta-btn">Записаться на курс</button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-about">
+                <div class="footer-logo">
+                    <i class="fas fa-database"></i>
+                    <span>MySQLCourse</span>
+                </div>
+                <p class="about-text">Профессиональное обучение работе с базами данных MySQL для разработчиков всех уровней</p>
+                <div class="social-links">
+                    <a href="#" aria-label="VKontakte"><i class="fab fa-vk"></i></a>
+                    <a href="#" aria-label="Telegram"><i class="fab fa-telegram"></i></a>
+                    <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-links">
+                <h3 class="footer-title">Навигация</h3>
+                <ul class="footer-nav">
+                    <li><a href="#">Главная</a></li>
+                    <li><a href="#">Программа</a></li>
+                    <li><a href="#">Практика</a></li>
+                    <li><a href="#">Тесты</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-contacts">
+                <h3 class="footer-title">Контакты</h3>
+                <address class="contact-info">
+                    <p><i class="fas fa-envelope"></i> DaRGalyamov@kpfu.ru</p>
+                    <p><i class="fas fa-phone"></i> +7 (123) 456-78-90</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Казань, ул. Кремлевская, 35</p>
+                </address>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p class="copyright">&copy; 2023 MySQLCourse. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
