@@ -1,0 +1,199 @@
+
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            z-index: 5;
+        }
+        .form-container {
+            max-width: 500px;
+            margin: 2rem auto;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        .form-control.is-invalid {
+            background-image: none;
+            padding-right: 12px;
+        }
+        .form-control.is-valid {
+            background-image: none;
+            padding-right: 12px;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container">
+        <div class="form-container bg-white">
+            <h2 class="text-center mb-4">Создать аккаунт</h2>
+
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="post" id="registrationForm" novalidate>
+                {% csrf_token %}
+
+                <!-- Имя пользователя -->
+                <div class="mb-3">
+                    <label for="id_username" class="form-label">Имя пользователя</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        <input type="text"
+                               class="form-control {% if form.username.errors %}is-invalid{% endif %}"
+                               id="id_username"
+                               name="username"
+                               value="{{ form.username.value|default:'' }}"
+                               required
+                               minlength="3">
+                        <div class="invalid-feedback">
+                            {{ form.username.errors.as_text }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="mb-3">
+                    <label for="id_email" class="form-label">Email</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                        <input type="email"
+                               class="form-control {% if form.email.errors %}is-invalid{% endif %}"
+                               id="id_email"
+                               name="email"
+                               value="{{ form.email.value|default:'' }}"
+                               required>
+                        <div class="invalid-feedback">
+                            {{ form.email.errors.as_text }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Пароль -->
+                <div class="mb-3 position-relative">
+                    <label for="id_password1" class="form-label">Пароль</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                        <input type="password"
+                               class="form-control {% if form.password1.errors %}is-invalid{% endif %}"
+                               id="id_password1"
+                               name="password1"
+                               required
+                               minlength="8">
+                        <i class="password-toggle fas fa-eye-slash" onclick="togglePassword('id_password1')"></i>
+                        <div class="invalid-feedback">
+                            {{ form.password1.errors.as_text }}
+                        </div>
+                    </div>
+                    <small class="form-text text-muted">Минимум 8 символов</small>
+                </div>
+
+                <!-- Подтверждение пароля -->
+                <div class="mb-4 position-relative">
+                    <label for="id_password2" class="form-label">Подтвердите пароль</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                        <input type="password"
+                               class="form-control {% if form.password2.errors %}is-invalid{% endif %}"
+                               id="id_password2"
+                               name="password2"
+                               required>
+                        <i class="password-toggle fas fa-eye-slash" onclick="togglePassword('id_password2')"></i>
+                        <div class="invalid-feedback">
+                            {{ form.password2.errors.as_text }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Чекбокс -->
+                <div class="mb-3 form-check">
+                    <input type="checkbox"
+                           class="form-check-input"
+                           id="terms"
+                           required>
+                    <label class="form-check-label" for="terms">
+                        Я согласен с <a href="#">условиями использования</a>
+                    </label>
+                    <div class="invalid-feedback">Необходимо ваше согласие</div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Зарегистрироваться</button>
+            </form>
+
+           <div class="mt-3 text-center">
+    Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a>
+</div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Переключение видимости пароля
+        function togglePassword(fieldId) {
+            const passwordField = document.getElementById(fieldId);
+            const toggleIcon = passwordField.nextElementSibling;
+
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                toggleIcon.classList.replace('fa-eye-slash', 'fa-eye');
+            } else {
+                passwordField.type = 'password';
+                toggleIcon.classList.replace('fa-eye', 'fa-eye-slash');
+            }
+        }
+
+        // Валидация формы
+        (function() {
+            'use strict';
+
+            const form = document.getElementById('registrationForm');
+
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+
+                checkPasswordsMatch();
+                form.classList.add('was-validated');
+            }, false);
+
+            // Проверка совпадения паролей
+            function checkPasswordsMatch() {
+                const password1 = document.getElementById('id_password1');
+                const password2 = document.getElementById('id_password2');
+
+                if (password1.value && password2.value) {
+                    if (password1.value !== password2.value) {
+                        password2.setCustomValidity('Пароли не совпадают');
+                    } else {
+                        password2.setCustomValidity('');
+                    }
+                }
+            }
+
+            // Слушатели для полей
+            document.getElementById('id_password1').addEventListener('input', checkPasswordsMatch);
+            document.getElementById('id_password2').addEventListener('input', checkPasswordsMatch);
+        })();
+    </script>
+</body>
+</html>
