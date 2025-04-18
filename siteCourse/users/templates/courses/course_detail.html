@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+<body>
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Мои курсы</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for course in user_courses %}
+                    <a href="{% url 'course_detail' course.id %}" class="list-group-item list-group-item-action {% if course.id == current_course.id %}active{% endif %}">
+                        {{ course.title }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-9">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title">{{ course.title }}</h2>
+                    <p class="card-text">{{ course.description }}</p>
+
+                    {% if is_teacher %}
+                    <div class="d-flex justify-content-end">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="teacherMode" checked>
+                            <label class="form-check-label" for="teacherMode">Режим преподавателя</label>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                {% for module in modules %}
+                <div class="col-md-6 mb-4">
+                    <div class="card module-card h-100 {% if module.is_hidden %}hidden-module{% endif %}" onclick="window.location='{% url module.module_type|yesno:'module_theory,module_test' module.id %}'">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h5 class="card-title">{{ module.title }}</h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">{{ module.get_module_type_display }}</h6>
+                                </div>
+                                <span class="badge bg-{% if module.is_hidden %}secondary{% else %}success{% endif %}">
+                                    {% if module.is_hidden %}Скрыто{% else %}Доступно{% endif %}
+                                </span>
+                            </div>
+                            <p class="card-text mt-3">{{ module.description }}</p>
+
+                            {% if is_teacher %}
+                            <div class="module-actions mt-3">
+                                {% if module.module_type == 'theory' %}
+                                <a href="{% url 'edit_theory' module.id %}" class="btn btn-sm btn-outline-primary me-2">
+                                    <i class="fas fa-edit"></i> Редактировать
+                                </a>
+                                {% else %}
+                                <a href="{% url 'edit_questions' module.id %}" class="btn btn-sm btn-outline-primary me-2">
+                                    <i class="fas fa-edit"></i> Редактировать
+                                </a>
+                                {% endif %}
+                                <a href="{% url 'toggle_module' module.id %}" class="btn btn-sm btn-outline-{% if module.is_hidden %}primary{% else %}secondary{% endif %}">
+                                    <i class="fas fa-eye{% if not module.is_hidden %}-slash{% endif %}"></i> {% if module.is_hidden %}Показать{% else %}Скрыть{% endif %}
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+</body>
