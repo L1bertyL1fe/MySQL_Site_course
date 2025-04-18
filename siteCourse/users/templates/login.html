@@ -1,5 +1,6 @@
 {% load account %}
 
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -60,6 +61,7 @@
             </div>
 
             <form id="loginForm" method="POST" action="{% url 'account_login' %}" novalidate>
+                {% csrf_token %} 
                 <!-- Email/Логин -->
                 <div class="mb-3">
                     <label for="username" class="form-label">Email или имя пользователя</label>

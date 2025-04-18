@@ -10,17 +10,10 @@ class CustomSignupView(SignupView):
     form_class = CustomSignupForm
     template_name = 'registration.html'
 
-def register_view(request):
-    view = CustomSignupView.as_view()
-    return view(request)
-
 class CustomLoginView(LoginView):
     form_class = CustomLoginForm
     template_name = 'login.html'
 
-def login_view(request):
-    view = CustomLoginView.as_view()
-    return view(request)
 
 def logout_view(request):
     logout(request)
