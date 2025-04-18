@@ -1,12 +1,6 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Курс MySQL | MySQLCourse</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
+{% load static %}
+{% block  header %}
+
 <header class="bg-light">
     <nav class="navbar navbar-expand-lg navbar-light container py-3">
         <a class="navbar-brand d-flex align-items-center" href="#">
@@ -39,21 +33,28 @@
 
             <div class="d-flex ms-3">
                 <div class="dropdown">
+                    {% if user.is_authenticated %}
                     <button class="btn btn-light dropdown-toggle" type="button" id="userMenu" data-bs-toggle="dropdown">
-                        <i class="fas fa-user me-1"></i> Иван Петров
+                        <i class="fas fa-user me-1"></i> {{ user.username }}
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profile">
                         <li><a class="dropdown-item" href="#"><i class="fas fa-user-cog me-1"></i> Профиль</a></li>
                         <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-1"></i> Настройки</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-1"></i> Выйти</a></li>
+                        <form method="post" action="{% url 'account_logout' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="/"/>
+                        <li><button class="dropdown-item" type="submit"><i class="fas fa-sign-out-alt me-1"></i> Выйти</button></li>
+                        </form>
                     </ul>
+                    {% else %}
+                    <a href="{% url 'account_login' %}" class="btn btn-outline-primary me-2"><i class="fas fa-sign-in-alt"></i> Вход</a>
+                    <a href="{% url 'account_signup' %}" class="btn btn-primary"><i class="fas fa-user"></i> Регистрация</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </nav>
 </header>
-<body>
-{% block content %}
+
 {% endblock %}
-</body>
