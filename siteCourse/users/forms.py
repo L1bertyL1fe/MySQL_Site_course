@@ -24,6 +24,8 @@ class CustomSignupForm(SignupForm):
             'class': 'form-control',
             'placeholder': 'Подтвердите пароль'
         })
+        # phonenumber
+
 
 
 
