@@ -1,11 +1,5 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Курс MySQL | MySQLCourse</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% extends "partials/base.html" %}
+{% block extra_css %}
     <style>
         :root {
             --primary-color: #4e73df;
@@ -19,21 +13,11 @@
             background-color: var(--light-bg);
             font-family: 'Nunito', sans-serif;
         }
-        
-        .navbar-brand {
-            font-weight: 800;
-            font-size: 1.25rem;
-        }
-        
+
         .navbar-brand i {
             margin-right: 0.5rem;
         }
-        
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-        
+
         .btn-outline-primary {
             color: var(--primary-color);
             border-color: var(--primary-color);
@@ -64,13 +48,7 @@
             transform: translateY(-5px);
             box-shadow: 0 0.5rem 1.5rem 0 rgba(58, 59, 69, 0.2);
         }
-        
-        .hidden-module {
-            opacity: 0.6;
-            background-color: #f8f9fa;
-            border-left-color: var(--secondary-color);
-        }
-        
+
         .theory-content img {
             max-width: 100%;
             height: auto;
@@ -78,61 +56,13 @@
             margin: 1rem 0;
             box-shadow: 0 0.15rem 0.5rem 0 rgba(0,0,0,0.1);
         }
-        
-        .video-container {
-            position: relative;
-            padding-bottom: 56.25%;
-            margin: 1rem 0;
-            border-radius: 0.35rem;
-            overflow: hidden;
-            box-shadow: 0 0.15rem 0.5rem 0 rgba(0,0,0,0.1);
-        }
-        
+
         .video-container iframe {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-        }
-        
-        .animation-container {
-            background-color: #f8f9fa;
-            border-radius: 0.35rem;
-            padding: 1rem;
-            margin: 1rem 0;
-            text-align: center;
-            box-shadow: 0 0.15rem 0.5rem 0 rgba(0,0,0,0.1);
-        }
-        
-        .question-card {
-            margin-bottom: 1.5rem;
-            border-left: 0.25rem solid var(--primary-color);
-        }
-        
-        .match-question {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-            margin: 1rem 0;
-        }
-        
-        .match-item {
-            background: #f8f9fa;
-            padding: 0.5rem 1rem;
-            border-radius: 0.25rem;
-            cursor: grab;
-            box-shadow: 0 0.125rem 0.25rem 0 rgba(0,0,0,0.1);
-        }
-        
-        .correct-answer {
-            background-color: rgba(28, 200, 138, 0.1);
-            border-left-color: var(--success-color);
-        }
-        
-        .incorrect-answer {
-            background-color: rgba(231, 74, 59, 0.1);
-            border-left-color: var(--danger-color);
         }
         
         .progress {
@@ -143,74 +73,11 @@
         .progress-bar {
             background-color: var(--primary-color);
         }
-        
-        .form-container {
-            max-width: 500px;
-            margin: 2rem auto;
-            padding: 2rem;
-            border-radius: 0.35rem;
-            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
-            background: white;
-        }
-        
-        .password-toggle {
-            position: absolute;
-            right: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            z-index: 5;
-            color: var(--secondary-color);
-        }
+
     </style>
-</head>
-<header class="bg-light">
-    <nav class="navbar navbar-expand-lg navbar-light container py-3">
-        <a class="navbar-brand d-flex align-items-center" href="#">
-            <i class="fas fa-database fs-3 text-primary me-2"></i>
-            <span class="fw-bold">MySQL<span class="text-primary">Course</span></span>
-        </a>
-        
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <i class="fas fa-bars"></i>
-        </button>
-        
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav mx-auto">
-                <li class="nav-item">
-                    <a class="nav-link active" href="#">Главная</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Курсы</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Теория</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Практика</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">О проекте</a>
-                </li>
-            </ul>
-            
-            <div class="d-flex ms-3">
-                <div class="dropdown">
-                    <button class="btn btn-light dropdown-toggle" type="button" id="userMenu" data-bs-toggle="dropdown">
-                        <i class="fas fa-user me-1"></i> Иван Петров
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-user-cog me-1"></i> Профиль</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-1"></i> Настройки</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-1"></i> Выйти</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </nav>
-</header>
-<body>
+{% endblock %}
+
+{% block content %}
     <!-- Основное содержимое -->
     <div class="container mt-4">
         <div class="row">
@@ -329,9 +196,10 @@
         </div>
     </div>
 
+{% endblock %}
     <!-- Модальные окна (аналогично предыдущему примеру) -->
     <!-- ... -->
-
+{% block javascript %}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Режим преподавателя
@@ -513,5 +381,4 @@
 
         // Остальные функции (редактирование, модальные окна) аналогичны предыдущему примеру
     </script>
-</body>
-</html>
+{% endblock %}
