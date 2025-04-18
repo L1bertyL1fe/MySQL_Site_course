@@ -58,14 +58,15 @@
                 <h2>Вход в MySQLCourse</h2>
                 <p class="text-muted">Введите свои учетные данные</p>
             </div>
+
             <form id="loginForm" method="POST" action="{% url 'account_login' %}" novalidate>
                 <!-- Email/Логин -->
                 <div class="mb-3">
                     <label for="username" class="form-label">Email или имя пользователя</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-user"></i></span>
-                        <input type="text" 
-                               class="form-control" 
+                        <input type="text"
+                               class="form-control"
                                id="username"
                                name="username"
                                required>
@@ -78,10 +79,10 @@
                     <label for="password" class="form-label">Пароль</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                        <input type="password" 
-                               class="form-control" 
-                               id="password" 
-                               name="password" 
+                        <input type="password"
+                               class="form-control"
+                               id="password"
+                               name="password"
                                required
                                minlength="8">
                         <i class="password-toggle fas fa-eye-slash" onclick="togglePassword('password')"></i>
@@ -121,13 +122,13 @@
         </div>
     </div>
 
-    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Переключение видимости пароля
         function togglePassword(fieldId) {
             const passwordField = document.getElementById(fieldId);
             const toggleIcon = passwordField.nextElementSibling;
-            
+
             if (passwordField.type === 'password') {
                 passwordField.type = 'text';
                 toggleIcon.classList.replace('fa-eye-slash', 'fa-eye');
@@ -140,7 +141,7 @@
         // Валидация формы
         (function() {
             'use strict';
-            
+
             const form = document.getElementById('loginForm');
 
             form.addEventListener('submit', function(event) {
@@ -192,14 +193,14 @@
                 const errorAlert = document.createElement('div');
                 errorAlert.className = 'alert alert-danger mt-3';
                 errorAlert.textContent = message;
-                
+
                 const existingAlert = document.querySelector('.alert-danger');
                 if (existingAlert) {
                     existingAlert.replaceWith(errorAlert);
                 } else {
                     form.appendChild(errorAlert);
                 }
-                
+
                 setTimeout(() => {
                     errorAlert.classList.add('fade');
                     setTimeout(() => errorAlert.remove(), 300);
