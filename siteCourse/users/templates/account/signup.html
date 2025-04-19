@@ -1,5 +1,6 @@
 {% load i18n %}
 
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -144,6 +145,17 @@
                     </div>
                 </div>
 
+                <div class="mb-3">
+                    {{ form.role.label_tag }}
+                    {{ form.role }}
+                    {{ form.role.errors }}
+                </div>
+
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-info">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
                 <!-- Чекбокс -->
                 <div class="mb-3 form-check">
                     <input type="checkbox"
