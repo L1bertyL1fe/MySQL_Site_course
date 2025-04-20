@@ -1,5 +1,5 @@
 {% load i18n %}
-
+{% load account socialaccount %}
 
 <!DOCTYPE html>
 <html lang="ru">
@@ -40,12 +40,28 @@
         .socialaccount-providers li {
             margin-bottom: 10px;
         }
+        .alert-message {
+            animation: fadeIn 0.5s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body class="bg-light">
     <div class="container">
         <div class="form-container bg-white">
             <h2 class="text-center mb-4">Создать аккаунт</h2>
+
+            <!-- Блок для системных сообщений -->
+            {% if messages %}
+                <div class="alert alert-info alert-message">
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                </div>
+            {% endif %}
 
             {% if form.errors %}
                 <div class="alert alert-danger">
@@ -145,17 +161,21 @@
                     </div>
                 </div>
 
+                <!-- Выбор роли -->
                 <div class="mb-3">
-                    {{ form.role.label_tag }}
-                    {{ form.role }}
-                    {{ form.role.errors }}
+                    <label for="id_role" class="form-label">Роль</label>
+                    <select name="role" id="id_role" class="form-control {% if form.role.errors %}is-invalid{% endif %}">
+                        <option value="student">Студент</option>
+                        <option value="teacher">Преподаватель (требуется подтверждение)</option>
+                    </select>
+                    {% if form.role.errors %}
+                        <div class="invalid-feedback">
+                            {{ form.role.errors.as_text }}
+                        </div>
+                    {% endif %}
+                    <small class="form-text text-muted">При выборе роли преподавателя ваша заявка будет рассмотрена администратором</small>
                 </div>
 
-                {% if messages %}
-                    {% for message in messages %}
-                    <div class="alert alert-info">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
                 <!-- Чекбокс -->
                 <div class="mb-3 form-check">
                     <input type="checkbox"
