@@ -38,7 +38,7 @@
             <div class="row mb-4">
                 {% for module in modules %}
                 <div class="col-md-6 mb-4">
-                    <div class="card module-card h-100 {% if module.is_hidden %}hidden-module{% endif %}" onclick="window.location='{% url module.module_type|yesno:'module_theory,module_test' module.id %}'">
+                    <div class="card module-card h-100 {% if module.is_hidden %}hidden-module{% endif %}" onclick="window.location='{% if module.module_type == "theory" %}{% url "module_theory" module.id %}{% else %}{% url "module_test" module.id %}{% endif %}'">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>

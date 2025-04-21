@@ -75,7 +75,9 @@
                                             data-text="{{ question.text }}">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <a href="?delete_question={{ question.id }}" class="btn btn-sm btn-outline-danger">
+                                    <a href="{% url 'edit_questions' module.id %}?delete_question={{ question.id }}"
+                                       class="btn btn-sm btn-outline-danger"
+                                       onclick="return confirm('Вы уверены, что хотите удалить этот вопрос?')">
                                         <i class="fas fa-trash"></i>
                                     </a>
                                 </div>
@@ -197,11 +199,12 @@ document.addEventListener('DOMContentLoaded', function() {
             optionsContainer.innerHTML = `
                 <div class="mb-3">
                     <label class="form-label">Правильный ответ</label>
-                    <input type="text" name="correct_answer" class="form-control">
+                    <input type="text" name="correct_answer" class="form-control"
+                              value="${questionId ? existingCorrectAnswer : ''}" required>
                 </div>
             `;
             addOptionBtn.style.display = 'none';
-        } 
+        }
         else if (type === 'single' || type === 'multiple') {
             optionsContainer.innerHTML = '<h6 class="mt-3">Варианты ответов:</h6>';
             addOptionBtn.style.display = 'block';

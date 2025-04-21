@@ -99,5 +99,24 @@ class UserAnswer(models.Model):
     is_correct = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def check_match_answer(self):
+        if self.question.question_type != 'match':
+            return False
+
+        correct_pairs = {
+            opt.id: opt.match_value
+            for opt in self.question.options.all()
+        }
+
+        user_pairs = [
+            (opt.id, opt.match_value)
+            for opt in self.selected_options.all()
+        ]
+
+        return all(
+            str(correct_pairs.get(term_id, '')) == str(definition_id)
+            for term_id, definition_id in user_pairs
+        )
+
     def __str__(self):
         return f"{self.user.username} - {self.question.text[:50]}..."

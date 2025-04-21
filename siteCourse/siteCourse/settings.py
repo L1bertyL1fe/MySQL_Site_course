@@ -35,6 +35,10 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount'
 ]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 AUTH_USER_MODEL = 'users.CustomUser'
 
 MIDDLEWARE = [

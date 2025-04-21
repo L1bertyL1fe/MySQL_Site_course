@@ -60,7 +60,7 @@
                         {% csrf_token %}
 
                         <div class="alert alert-info mb-4">
-                            <i class="fas fa-info-circle me-2"></i>Тест содержит {{ questions.count }} вопросов разных типов.
+                            <i class="fas fa-info-circle me-2"></i>Тест содержит {{ questions.count }} вопросов.
                         </div>
 
                         {% for question in questions %}
@@ -104,29 +104,50 @@
                                 </div>
 
                                 {% elif question.question_type == 'match' %}
-                                <div class="row mb-3">
-                                    <div class="col-md-5">
-                                        <h6 class="small font-weight-bold text-center mb-3">Команды</h6>
-                                        <ul class="list-group match-column" data-column="1">
-                                            {% for option in question.options.all %}
-                                            <li class="list-group-item match-item" data-id="{{ option.id }}">
-                                                {{ option.text }}
-                                            </li>
-                                            {% endfor %}
-                                        </ul>
+                                <div class="match-question mb-4" data-questionid="{{ question.id }}">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <h6>Термины</h6>
+                                            <ul class="list-group match-terms">
+                                                {% for option in question.options.all %}
+                                                <li class="list-group-item term-item"
+                                                    data-id="{{ option.id }}"
+                                                    draggable="true">
+                                                    {{ option.text }}
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+
+                                        <div class="col-md-2 text-center">
+                                            <div class="mt-4">
+                                                <i class="fas fa-arrows-alt-h fa-2x text-muted"></i>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-5">
+                                            <h6>Определения</h6>
+                                            <ul class="list-group match-definitions">
+                                                {% for option in question.options.all %}
+                                                <li class="list-group-item definition-item"
+                                                    data-id="{{ option.match_value }}">
+                                                    {{ option.match_value }}
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
                                     </div>
-                                    <div class="col-md-2 text-center align-self-center">
-                                        <i class="fas fa-arrows-alt-h fa-2x text-muted"></i>
-                                    </div>
-                                    <div class="col-md-5">
-                                        <h6 class="small font-weight-bold text-center mb-3">Назначение</h6>
-                                        <ul class="list-group match-column" data-column="2">
-                                            {% for option in question.options.all %}
-                                            <li class="list-group-item match-item" data-id="{{ option.id }}_match">
-                                                {{ option.match_value }}
-                                            </li>
-                                            {% endfor %}
-                                        </ul>
+
+                                    <!-- Скрытые поля для отправки данных -->
+                                    <div class="pairs-container">
+                                        {% for pair in user_answer.selected_options.all %}
+                                        <input type="hidden"
+                                               name="question_{{ question.id }}_term_{{ forloop.counter0 }}"
+                                               value="{{ pair.id }}">
+                                        <input type="hidden"
+                                               name="question_{{ question.id }}_definition_{{ forloop.counter0 }}"
+                                               value="{{ pair.match_value }}">
+                                        {% endfor %}
                                     </div>
                                 </div>
                                 {% endif %}
@@ -165,38 +186,52 @@
 
 {% if not progress.completed %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Drag and drop для вопросов на соответствие
-    let draggedItem = null;
+// Добавляем обработку drag-and-drop для соответствий
+function initMatchQuestions() {
+    document.querySelectorAll('.match-question').forEach(container => {
+        const terms = container.querySelectorAll('.term-item');
+        const definitions = container.querySelectorAll('.definition-item');
+        const pairsContainer = container.querySelector('.pairs-container');
+        let pairCounter = 0;
 
-    document.querySelectorAll('.match-item').forEach(item => {
-        item.setAttribute('draggable', 'true');
-
-        item.addEventListener('dragstart', function() {
-            draggedItem = this;
-            setTimeout(() => this.style.opacity = '0.4', 0);
+        terms.forEach(term => {
+            term.addEventListener('dragstart', e => {
+                e.dataTransfer.setData('term_id', term.dataset.id);
+            });
         });
 
-        item.addEventListener('dragend', function() {
-            this.style.opacity = '1';
-        });
+        definitions.forEach(def => {
+            def.addEventListener('dragover', e => e.preventDefault());
 
-        item.addEventListener('dragover', function(e) {
-            e.preventDefault();
-        });
+            def.addEventListener('drop', e => {
+                e.preventDefault();
+                const termId = e.dataTransfer.getData('term_id');
+                const definitionId = def.dataset.id;
 
-        item.addEventListener('drop', function(e) {
-            e.preventDefault();
-            if (draggedItem !== this && draggedItem.parentNode !== this.parentNode) {
-                const clone1 = draggedItem.cloneNode(true);
-                const clone2 = this.cloneNode(true);
+                console.log(container.dataset);
+                console.log(container.dataset.questionid);
 
-                draggedItem.parentNode.replaceChild(clone2, draggedItem);
-                this.parentNode.replaceChild(clone1, this);
-            }
+                // Добавляем скрытые поля
+                pairsContainer.innerHTML += `
+                    <input type="hidden"
+                           name="question_${container.dataset.questionid}_term_${pairCounter}"
+                           value="${termId}">
+                    <input type="hidden"
+                           name="question_${container.dataset.questionid}_definition_${pairCounter}"
+                           value="${definitionId}">
+                `;
+                pairCounter++;
+
+                // Визуальное отображение
+                def.classList.add('bg-success', 'text-white');
+                setTimeout(() => def.classList.remove('bg-success', 'text-white'), 500);
+            });
         });
     });
-});
+}
+
+// Инициализация при загрузке и после AJAX-обновлений
+document.addEventListener('DOMContentLoaded', initMatchQuestions);
 </script>
 {% endif %}
 {% endblock %}
