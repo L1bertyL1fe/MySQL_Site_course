@@ -1,14 +1,76 @@
-{% load account %}
+{% load static %}
 
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Вход в систему</title>
+    <title>Вход в MySQLCourse</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #f8f9fc;
+            --accent-color: #2e59d9;
+        }
+
+        body {
+            background-color: var(--secondary-color);
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .auth-container {
+            max-width: 450px;
+            margin: 5rem auto;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            background: white;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .auth-logo {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .auth-title {
+            font-weight: 600;
+            color: #5a5c69;
+        }
+
+        .auth-subtitle {
+            color: #858796;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            padding: 0.75rem 1rem;
+            border-radius: 0.35rem;
+        }
+
+        .input-group-text {
+            background-color: #f8f9fc;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 0.75rem;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
         .password-toggle {
             position: absolute;
             right: 15px;
@@ -16,108 +78,182 @@
             transform: translateY(-50%);
             cursor: pointer;
             z-index: 5;
-        }
-        .login-container {
-            max-width: 450px;
-            margin: 2rem auto;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-        }
-        .social-login .btn {
-            width: 100%;
-            margin-bottom: 10px;
-            text-align: left;
-            position: relative;
-            padding-left: 45px;
-        }
-        .social-login .btn i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-        /* Отключаем зеленую обводку для чекбокса */
-        #remember {
-            border-color: #dee2e6 !important;
-            box-shadow: none !important;
-            color: red !important;
+            color: #b7b9cc;
         }
 
-        /* Отключаем зеленую галочку */
-        .form-.was-validated .form-check-input:valid~.form-check-label {
-            color: red !important;
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: #b7b9cc;
+        }
+
+        .divider::before, .divider::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px solid #e3e6f0;
+        }
+
+        .divider::before {
+            margin-right: 1rem;
+        }
+
+        .divider::after {
+            margin-left: 1rem;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem;
+            margin-bottom: 0.75rem;
+            border-radius: 0.35rem;
+            font-weight: 600;
+        }
+
+        .social-btn i {
+            margin-right: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .btn-vk {
+            background-color: #4a76a8;
+            color: white;
+        }
+
+        .btn-google {
+            background-color: #ea4335;
+            color: white;
+        }
+
+        .btn-github {
+            background-color: #333;
+            color: white;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #858796;
+        }
+
+        .auth-footer a {
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-container {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Кастомный чекбокс */
+        .form-check-input:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        /* Сообщения */
+        .alert-message {
+            border-left: 4px solid var(--primary-color);
+            animation: fadeIn 0.3s ease-out;
         }
     </style>
 </head>
-<body class="bg-light">
+<body>
     <div class="container">
-        <div class="login-container bg-white">
-            <div class="text-center mb-4">
-                <i class="fas fa-database fs-1 text-primary mb-3"></i>
-                <h2>Вход в MySQLCourse</h2>
-                <p class="text-muted">Введите свои учетные данные</p>
+        <div class="auth-container">
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <i class="fas fa-database"></i>
+                </div>
+                <h4 class="auth-title">Добро пожаловать в MySQLCourse!</h4>
+                <p class="auth-subtitle">Пожалуйста, войдите в свой аккаунт</p>
+
+                {% if messages %}
+                <div class="alert alert-message alert-dismissible fade show" role="alert">
+                    {% for message in messages %}
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    {% endfor %}
+                </div>
+                {% endif %}
             </div>
 
             <form id="loginForm" method="POST" action="{% url 'account_login' %}" novalidate>
                 {% csrf_token %}
-                <!-- Email/Логин -->
+                <input type="hidden" name="next" value="{{ request.GET.next }}" />
+                <!-- Поле для ввода email/логина -->
                 <div class="mb-3">
                     <label for="id_login" class="form-label">Email или имя пользователя</label>
                     <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
                         <input type="text"
                                class="form-control"
-                               id="login"
+                               id="id_login"
                                name="login"
+                               placeholder="Введите ваш email или имя пользователя"
                                required>
-                        <div class="invalid-feedback">Пожалуйста, введите email или имя пользователя</div>
                     </div>
+                    <div class="invalid-feedback">Пожалуйста, введите email или имя пользователя</div>
                 </div>
 
-                <!-- Пароль -->
+                <!-- Поле для ввода пароля -->
                 <div class="mb-3 position-relative">
                     <label for="id_password" class="form-label">Пароль</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-lock"></i></span>
                         <input type="password"
                                class="form-control"
-                               id="password"
+                               id="id_password"
                                name="password"
+                               placeholder="Введите ваш пароль"
                                required>
-{#                               minlength="8">#}
-                        <i class="password-toggle fas fa-eye-slash" onclick="togglePassword('password')"></i>
-                        <div class="invalid-feedback">Пароль должен быть не менее 8 символов</div>
+                        <i class="password-toggle fas fa-eye-slash" onclick="togglePassword('id_password')"></i>
                     </div>
+                    <div class="invalid-feedback">Пожалуйста, введите пароль</div>
                 </div>
 
-                <!-- Запомнить меня и забыли пароль -->
-                <div class="d-flex justify-content-between mb-3">
+                <!-- Запомнить меня и ссылка на восстановление пароля -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="id_remember">
+                        <input class="form-check-input" type="checkbox" id="id_remember" name="remember">
                         <label class="form-check-label" for="id_remember">Запомнить меня</label>
                     </div>
-                    <a href="#" class="text-decoration-none">Забыли пароль?</a>
+                    <a href="{% url 'account_reset_password' %}" class="text-decoration-none">Забыли пароль?</a>
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100 mb-3">Войти</button>
+                <!-- Кнопка входа -->
+                <button type="submit" class="btn btn-primary w-100 mb-4">
+                    <i class="fas fa-sign-in-alt me-2"></i> Войти
+                </button>
+
+                <!-- Разделитель -->
+                <div class="divider">Или войдите через</div>
 
                 <!-- Социальные сети -->
-                <div class="social-login mb-4">
-                    <p class="text-center text-muted mb-3">Или войдите через</p>
-                    <button type="button" class="btn btn-outline-primary">
+                <div class="social-auth mb-4">
+                    <button type="button" class="social-btn btn-vk w-100">
                         <i class="fab fa-vk"></i> ВКонтакте
                     </button>
-                    <button type="button" class="btn btn-outline-danger">
+                    <button type="button" class="social-btn btn-google w-100">
                         <i class="fab fa-google"></i> Google
                     </button>
-                    <button type="button" class="btn btn-outline-dark">
+                    <button type="button" class="social-btn btn-github w-100">
                         <i class="fab fa-github"></i> GitHub
                     </button>
                 </div>
 
-                <div class="text-center">
-                    Нет аккаунта? <a href="#" class="text-decoration-none">Зарегистрируйтесь</a>
+                <!-- Ссылка на регистрацию -->
+                <div class="auth-footer">
+                    Нет аккаунта? <a href="{% url 'account_signup' %}">Создайте его!</a>
                 </div>
             </form>
         </div>
@@ -151,63 +287,27 @@
                     event.stopPropagation();
                 }
 
-                // Здесь можно добавить AJAX запрос для авторизации
-                // Например:
-                // if (form.checkValidity()) {
-                //     const formData = new FormData(form);
-                //     fetch('/login', {
-                //         method: 'POST',
-                //         body: formData
-                //     })
-                //     .then(response => response.json())
-                //     .then(data => {
-                //         if (data.success) {
-                //             window.location.href = '/dashboard';
-                //         } else {
-                //             showError(data.message);
-                //         }
-                //     });
-                //     event.preventDefault();
-                // }
-
                 form.classList.add('was-validated');
             }, false);
 
             // Валидация в реальном времени
-            // В блоке валидации формы добавьте исключение для чекбокса
             form.querySelectorAll('.form-control').forEach(input => {
-                if (input.id !== 'remember') { // Исключаем чекбокс "Запомнить меня"
-                    console.log(input.id);
-                    input.addEventListener('input', function() {
-                        if (this.checkValidity()) {
-                            this.classList.remove('is-invalid');
-                            this.classList.add('is-valid');
-                        } else {
-                            this.classList.remove('is-valid');
-                            }
-                    });
-                }
+                input.addEventListener('input', function() {
+                    if (this.checkValidity()) {
+                        this.classList.remove('is-invalid');
+                        this.classList.add('is-valid');
+                    } else {
+                        this.classList.remove('is-valid');
+                        this.classList.add('is-invalid');
+                    }
+                });
             });
-
-            // Пример функции для показа ошибок
-            function showError(message) {
-                const errorAlert = document.createElement('div');
-                errorAlert.className = 'alert alert-danger mt-3';
-                errorAlert.textContent = message;
-
-                const existingAlert = document.querySelector('.alert-danger');
-                if (existingAlert) {
-                    existingAlert.replaceWith(errorAlert);
-                } else {
-                    form.appendChild(errorAlert);
-                }
-
-                setTimeout(() => {
-                    errorAlert.classList.add('fade');
-                    setTimeout(() => errorAlert.remove(), 300);
-                }, 5000);
-            }
         })();
+
+        // Автофокус на поле ввода
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('id_login').focus();
+        });
     </script>
 </body>
 </html>

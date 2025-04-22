@@ -1,0 +1,60 @@
+{% load static %}
+{% block  header %}
+
+<header class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light container py-3">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+            <i class="fas fa-database fs-3 text-primary me-2"></i>
+            <span class="fw-bold">MySQL<span class="text-primary">Course</span></span>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/">Главная</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/course/1">Курсы</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Теория</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Практика</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">О проекте</a>
+                </li>
+            </ul>
+
+            <div class="d-flex ms-3">
+                <div class="dropdown">
+                    {% if user.is_authenticated %}
+                    <button class="btn btn-light dropdown-toggle" type="button" id="userMenu" data-bs-toggle="dropdown">
+                        <i class="fas fa-user me-1"></i> {{ user.username }}
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profile">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-user-cog me-1"></i> Профиль</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-1"></i> Настройки</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <form method="post" action="{% url 'account_logout' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="/"/>
+                        <li><button class="dropdown-item" type="submit"><i class="fas fa-sign-out-alt me-1"></i> Выйти</button></li>
+                        </form>
+                    </ul>
+                    {% else %}
+                    <a href="{% url 'account_login' %}" class="btn btn-outline-primary me-2"><i class="fas fa-sign-in-alt"></i> Вход</a>
+                    <a href="{% url 'account_signup' %}" class="btn btn-primary"><i class="fas fa-user"></i> Регистрация</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+{% endblock %}

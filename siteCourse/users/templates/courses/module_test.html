@@ -1,0 +1,237 @@
+{% extends "partials/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Прогресс</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>{{ module.title }}</span>
+                            <span>{{ progress.score }}%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: {{ progress.score }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Навигация</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'course_detail' module.course.id %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-arrow-left me-2"></i>Назад к курсу
+                    </a>
+                    <a href="{% url 'module_theory' module.id %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-book me-2"></i>Теория
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-9">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h4 class="m-0 font-weight-bold text-primary">{{ module.title }}</h4>
+                    {% if is_teacher %}
+                    <a href="{% url 'edit_questions' module.id %}" class="btn btn-sm btn-primary">
+                        <i class="fas fa-edit me-1"></i>Редактировать
+                    </a>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+
+                    <form method="post" action="{% url 'module_test' module.id %}">
+                        {% csrf_token %}
+
+                        <div class="alert alert-info mb-4">
+                            <i class="fas fa-info-circle me-2"></i>Тест содержит {{ questions.count }} вопросов.
+                        </div>
+
+                        {% for question in questions %}
+                        <div class="card question-card mb-4 {% if user_answer and user_answer.is_correct %}correct-answer{% elif user_answer %}incorrect-answer{% endif %}">
+                            <div class="card-body">
+                                <h5 class="font-weight-bold text-primary">Вопрос {{ forloop.counter }}</h5>
+                                <p class="mb-3">{{ question.text }}</p>
+
+                                {% if question.question_type == 'text' %}
+                                <div class="mb-3">
+                                    <input type="text" name="question_{{ question.id }}" class="form-control"
+                                           placeholder="Введите ваш ответ" {% if progress.completed %}disabled{% endif %}>
+                                </div>
+
+                                {% elif question.question_type == 'single' %}
+                                <div class="mb-3">
+                                    {% for option in question.options.all %}
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="radio" name="question_{{ question.id }}"
+                                               id="q{{ question.id }}_opt{{ option.id }}" value="{{ option.id }}"
+                                               {% if progress.completed %}disabled{% endif %}>
+                                        <label class="form-check-label" for="q{{ question.id }}_opt{{ option.id }}">
+                                            {{ option.text }}
+                                        </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+
+                                {% elif question.question_type == 'multiple' %}
+                                <div class="mb-3">
+                                    {% for option in question.options.all %}
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" name="question_{{ question.id }}"
+                                               id="q{{ question.id }}_opt{{ option.id }}" value="{{ option.id }}"
+                                               {% if progress.completed %}disabled{% endif %}>
+                                        <label class="form-check-label" for="q{{ question.id }}_opt{{ option.id }}">
+                                            {{ option.text }}
+                                        </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+
+                                {% elif question.question_type == 'match' %}
+                                <div class="match-question mb-4" data-questionid="{{ question.id }}">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <h6>Термины</h6>
+                                            <ul class="list-group match-terms">
+                                                {% for option in question.options.all %}
+                                                <li class="list-group-item term-item"
+                                                    data-id="{{ option.id }}"
+                                                    draggable="true">
+                                                    {{ option.text }}
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+
+                                        <div class="col-md-2 text-center">
+                                            <div class="mt-4">
+                                                <i class="fas fa-arrows-alt-h fa-2x text-muted"></i>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-5">
+                                            <h6>Определения</h6>
+                                            <ul class="list-group match-definitions">
+                                                {% for option in question.options.all %}
+                                                <li class="list-group-item definition-item"
+                                                    data-id="{{ option.match_value }}">
+                                                    {{ option.match_value }}
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <!-- Скрытые поля для отправки данных -->
+                                    <div class="pairs-container">
+                                        {% for pair in user_answer.selected_options.all %}
+                                        <input type="hidden"
+                                               name="question_{{ question.id }}_term_{{ forloop.counter0 }}"
+                                               value="{{ pair.id }}">
+                                        <input type="hidden"
+                                               name="question_{{ question.id }}_definition_{{ forloop.counter0 }}"
+                                               value="{{ pair.match_value }}">
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                {% if progress.completed %}
+                                <div class="answer-feedback mt-3 p-2 rounded {% if user_answer.is_correct %}bg-success-light{% else %}bg-danger-light{% endif %}">
+                                    <i class="fas fa-{% if user_answer.is_correct %}check-circle text-success{% else %}times-circle text-danger{% endif %} me-2"></i>
+                                    {% if user_answer.is_correct %}
+                                    Верно!
+                                    {% else %}
+                                    Неверно. {% if question.question_type == 'text' %}Правильный ответ: {{ question.options.first.text }}{% endif %}
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                        <div class="d-grid gap-2 mt-4">
+                            {% if not progress.completed %}
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-check-circle me-2"></i>Завершить тест
+                            </button>
+                            {% else %}
+                            <a href="{% url 'module_theory' module.id %}" class="btn btn-outline-primary">
+                                <i class="fas fa-book me-2"></i>Вернуться к теории
+                            </a>
+                            {% endif %}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if not progress.completed %}
+<script>
+// Добавляем обработку drag-and-drop для соответствий
+function initMatchQuestions() {
+    document.querySelectorAll('.match-question').forEach(container => {
+        const terms = container.querySelectorAll('.term-item');
+        const definitions = container.querySelectorAll('.definition-item');
+        const pairsContainer = container.querySelector('.pairs-container');
+        let pairCounter = 0;
+
+        terms.forEach(term => {
+            term.addEventListener('dragstart', e => {
+                e.dataTransfer.setData('term_id', term.dataset.id);
+            });
+        });
+
+        definitions.forEach(def => {
+            def.addEventListener('dragover', e => e.preventDefault());
+
+            def.addEventListener('drop', e => {
+                e.preventDefault();
+                const termId = e.dataTransfer.getData('term_id');
+                const definitionId = def.dataset.id;
+
+                console.log(container.dataset);
+                console.log(container.dataset.questionid);
+
+                // Добавляем скрытые поля
+                pairsContainer.innerHTML += `
+                    <input type="hidden"
+                           name="question_${container.dataset.questionid}_term_${pairCounter}"
+                           value="${termId}">
+                    <input type="hidden"
+                           name="question_${container.dataset.questionid}_definition_${pairCounter}"
+                           value="${definitionId}">
+                `;
+                pairCounter++;
+
+                // Визуальное отображение
+                def.classList.add('bg-success', 'text-white');
+                setTimeout(() => def.classList.remove('bg-success', 'text-white'), 500);
+            });
+        });
+    });
+}
+
+// Инициализация при загрузке и после AJAX-обновлений
+document.addEventListener('DOMContentLoaded', initMatchQuestions);
+</script>
+{% endif %}
+{% endblock %}

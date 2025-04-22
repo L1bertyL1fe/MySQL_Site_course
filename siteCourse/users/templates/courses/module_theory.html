@@ -1,0 +1,104 @@
+{% extends "partials/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Прогресс</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>{{ module.title }}</span>
+                            <span>{{ progress.score }}%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: {{ progress.score }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Навигация</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'course_detail' module.course.id %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-arrow-left me-2"></i>Назад к курсу
+                    </a>
+                    {% if module.module_type == 'theory' %}
+                    <a href="{% url 'module_test' module.id %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-question-circle me-2"></i>Пройти тест
+                    </a>
+                    {% else %}
+                    <a href="{% url 'module_theory' module.id %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-book me-2"></i>Теория
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-9">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h4 class="m-0 font-weight-bold text-primary">{{ module.title }}</h4>
+                    {% if is_teacher %}
+                    <a href="{% url 'edit_theory' module.id %}" class="btn btn-sm btn-primary">
+                        <i class="fas fa-edit me-1"></i>Редактировать
+                    </a>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <div class="theory-content">
+                        {{ theory_content.text|safe }}
+
+                        {% if theory_content.image %}
+                        <div class="text-center my-4">
+                            <img src="{{ theory_content.image.url }}" alt="Теоретический материал" class="img-fluid rounded shadow">
+                        </div>
+                        {% endif %}
+
+                        {% if theory_content.video_url %}
+                        <div class="video-container my-4">
+                            <iframe src="{{ theory_content.video_url }}" frameborder="0" allowfullscreen></iframe>
+                        </div>
+                        {% endif %}
+
+                        {% if theory_content.animation %}
+                        <div class="animation-container my-4 p-3 text-center bg-light rounded shadow">
+                            <img src="{{ theory_content.animation.url }}" alt="Анимация" class="img-fluid">
+                            <p class="mt-2 text-muted">Интерактивная анимация</p>
+                        </div>
+                        {% endif %}
+
+                        {% if theory_content.audio %}
+                        <div class="mt-4">
+                            <h5 class="font-weight-bold text-primary">Аудиоматериал</h5>
+                            <audio controls class="w-100 mt-2">
+                                <source src="{{ theory_content.audio.url }}" type="audio/mpeg">
+                                Ваш браузер не поддерживает аудио элемент.
+                            </audio>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mt-4 pt-3 border-top">
+                        <a href="{% if module.module_type == 'theory' %}{% url 'module_test' module.id %}{% else %}{% url 'module_theory' module.id %}{% endif %}"
+                           class="btn btn-primary">
+                            {% if module.module_type == 'theory' %}
+                            <i class="fas fa-question-circle me-2"></i>Перейти к тесту
+                            {% else %}
+                            <i class="fas fa-book me-2"></i>Вернуться к теории
+                            {% endif %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

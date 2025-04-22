@@ -5,6 +5,14 @@ from allauth.account.forms import SignupForm, LoginForm as AllAuthLoginForm
 
 User = get_user_model()
 class CustomSignupForm(SignupForm):
+    role = forms.ChoiceField(
+        choices=[
+            ('student', 'Студент'),
+            ('teacher', 'Преподаватель (требуется подтверждение)'),
+        ],
+        label='Выберите роль',
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -24,14 +32,24 @@ class CustomSignupForm(SignupForm):
             'class': 'form-control',
             'placeholder': 'Подтвердите пароль'
         })
-        # phonenumber
 
+    def save(self, request):
+        user = super().save(request)
+        user.role = 'student'
+        user.save()
+
+        if self.cleaned_data['role'] == 'teacher':
+            from django.contrib import messages
+            messages.info(request, 'Ваша заявка на роль преподавателя будет рассмотрена администратором.')
+
+        return user
 
 
 
 class CustomLoginForm(AllAuthLoginForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
 
         self.fields['login'].widget.attrs.update({
             'class': 'form-control',
