@@ -1,0 +1,120 @@
+{% extends "partials/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Действия</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'course_detail' module.course.id %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-arrow-left me-2"></i>Назад к курсу
+                    </a>
+                    <a href="{% url 'module_theory' module.id %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-eye me-2"></i>Просмотр
+                    </a>
+                    <a href="{% url 'toggle_module' module.id %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-eye-{{ module.is_hidden|yesno:'slash,' }} me-2"></i>
+                        {{ module.is_hidden|yesno:'Показать модуль,Скрыть модуль' }}
+                    </a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Медиафайлы</h5>
+                </div>
+                <div class="card-body">
+                    {% if theory_content.image %}
+                    <div class="mb-3">
+                        <img src="{{ theory_content.image.url }}" class="img-fluid rounded mb-2">
+                        <a href="?delete_image=true" class="btn btn-sm btn-outline-danger w-100">
+                            <i class="fas fa-trash me-1"></i>Удалить изображение
+                        </a>
+                    </div>
+                    {% endif %}
+                    
+                    {% if theory_content.animation %}
+                    <div class="mb-3">
+                        <div class="animation-preview bg-light p-2 rounded text-center">
+                            <i class="fas fa-film fa-2x text-muted"></i>
+                            <p class="small mb-0">Анимация</p>
+                        </div>
+                        <a href="?delete_animation=true" class="btn btn-sm btn-outline-danger w-100 mt-2">
+                            <i class="fas fa-trash me-1"></i>Удалить анимацию
+                        </a>
+                    </div>
+                    {% endif %}
+                    
+                    {% if theory_content.audio %}
+                    <div class="mb-3">
+                        <div class="audio-preview bg-light p-2 rounded text-center">
+                            <i class="fas fa-music fa-2x text-muted"></i>
+                            <p class="small mb-0">Аудиофайл</p>
+                        </div>
+                        <a href="?delete_audio=true" class="btn btn-sm btn-outline-danger w-100 mt-2">
+                            <i class="fas fa-trash me-1"></i>Удалить аудио
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-9">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h4 class="m-0 font-weight-bold text-primary">Редактирование теории</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Название модуля</label>
+                            <input type="text" class="form-control" value="{{ module.title }}" disabled>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Теоретический материал</label>
+                            <textarea name="text" class="form-control" rows="10">{{ theory_content.text }}</textarea>
+                            <small class="text-muted">Используйте HTML для форматирования текста</small>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Изображение</label>
+                                <input type="file" name="image" class="form-control" accept="image/*">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Видео (URL)</label>
+                                <input type="url" name="video_url" class="form-control" value="{{ theory_content.video_url|default:'' }}" placeholder="https://youtube.com/...">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Анимация</label>
+                                <input type="file" name="animation" class="form-control" accept=".gif,.mp4,.webm">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label">Аудиофайл</label>
+                            <input type="file" name="audio" class="form-control" accept="audio/*">
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'module_theory' module.id %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-1"></i>Отмена
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i>Сохранить изменения
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
